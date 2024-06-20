@@ -9,7 +9,7 @@ class Node:
     self._prev = set(_children) # track previous node
 
   def __repr__(self):
-    return f"Node({self.value}, {self.grad})"
+    return f"Node({self.value})"
 
   # addition
   def __add__(self, other):
@@ -68,6 +68,15 @@ class Node:
     out = Node(math.exp(self.value), (self,))
     def _backprop():
       self.grad += out.value * out.grad
+    out._backprop = _backprop
+    return out
+  
+  # hyperbolic tangent
+  def tanh(self):
+    t = (math.exp(2*self.value)-1) / (math.exp(2*self.value)+1)
+    out = Node(t, (self,))
+    def _backprop():
+      self.grad += (1-t**2) * out.grad
     out._backprop = _backprop
     return out
 
