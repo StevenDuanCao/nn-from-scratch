@@ -1,4 +1,5 @@
 import random
+from nn_from_scratch.node import Node
 
 class Neuron:
   def __init__(self, n_in):
