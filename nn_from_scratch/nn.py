@@ -1,4 +1,5 @@
 import random
+from node import Node
 
 class Neuron:
   def __init__(self, n_in):
