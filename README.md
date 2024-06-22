@@ -1,6 +1,6 @@
 # nn_from_scratch
 
-An auto-differentiation engine and neural network architecture built with only a single dependency `numpy` to demonstrate foundational knowledge of ML. 
+An auto-differentiation engine and neural network architecture built from only `numpy` to demonstrate foundational knowledge of ML. 
 
 ### Auto-differentiation
 The `Node` class stores a value and gradient. The value can be manipulated through common operations. The gradient is automatically updated when backpropagation is called. Below is an example:
@@ -21,21 +21,18 @@ print(d.grad) # prints 1.0 (de/dd)
 ```
 
 ### Training a neural network
-The `MLP` class provides the architecture to build a multi-layer perception model. Below is an example:
+The `MLP` class provides the architecture to build a multi-layer perception model. Below is an example of binary classification:
 ```python
-# Sample of binary data with non-linear boundary
-def boundary(x):
-    return 7 * np.sin(0.5 * x)
-n_samples = 200
-X = np.random.uniform(-10, 10, (n_samples, 2))
-Y = (X[:, 1] > boundary(X[:, 0]))
+import matplotlib.pyplot as plt
+from sklearn.datasets import make_moons
 
+X, Y = make_moons(n_samples=100, noise=0.1, random_state=42)
 plt.figure()
-plt.scatter(X[Y == 0, 0], X[Y == 0, 1], color='red')
-plt.scatter(X[Y == 1, 0], X[Y == 1, 1], color='blue')
+plt.scatter(X[Y == 0, 0], X[Y == 0, 1], color='blue')
+plt.scatter(X[Y == 1, 0], X[Y == 1, 1], color='red')
 ```
+Initializing and training the model
 ```python
-# initialize and train model
 model = MLP([2, 16, 16, 1])
 num_iter = 200
 learning_rate = 1e-3
@@ -47,20 +44,28 @@ for k in range(num_iter):
     for p in model.parameters():
         p.grad = 0 
     loss.backprop()
-    # update parameters
+    # update model
     for p in model.parameters():
         p.value += -learning_rate * p.grad
     # track training loss
     if k % 50 == 0:
         print(f"Iter {k} | Loss {loss.value:.4f}")
-
-# prints Iter 0: Loss 82.9024
-# prints Iter 50: Loss 22.4701
-# prints Iter 100: Loss 18.0410
-# prints Iter 150: Loss 15.5451
 ```
+```bash
+Iter 0: Loss 83.8247
+Iter 10: Loss 11.5137
+Iter 20: Loss 9.0155
+Iter 30: Loss 7.0642
+Iter 40: Loss 5.4826
+Iter 50: Loss 4.4820
+Iter 60: Loss 3.8770
+Iter 70: Loss 3.4857
+Iter 80: Loss 3.2109
+Iter 90: Loss 3.0044
+Iter 100: Loss 2.8409
+```
+Visualizing the model's decision boundary
 ```python
-# visualize decision boundary
 x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
 y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
 h = 0.25
