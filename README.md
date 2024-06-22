@@ -34,7 +34,7 @@ plt.scatter(X[Y == 1, 0], X[Y == 1, 1], color='red')
 Initializing and training the model
 ```python
 model = MLP([2, 16, 16, 1])
-num_iter = 200
+num_iter = 100
 learning_rate = 1e-3
 for k in range(num_iter):
     # forward pass
@@ -48,8 +48,8 @@ for k in range(num_iter):
     for p in model.parameters():
         p.value += -learning_rate * p.grad
     # track training loss
-    if k % 50 == 0:
-        print(f"Iter {k} | Loss {loss.value:.4f}")
+    if k % 10 == 0:
+        print(f"Iter {k}: Loss {loss.value:.4f}")
 ```
 ```bash
 Iter 0: Loss 83.8247
@@ -68,7 +68,7 @@ Visualizing the model's decision boundary
 ```python
 x_min, x_max = X[:, 0].min() - 1, X[:, 0].max() + 1
 y_min, y_max = X[:, 1].min() - 1, X[:, 1].max() + 1
-h = 0.25
+h = 0.05
 xx, yy = np.meshgrid(np.arange(x_min, x_max, h),
                      np.arange(y_min, y_max, h))
 Z = np.c_[xx.ravel(), yy.ravel()]
